@@ -16,14 +16,14 @@
 
 void initialisation_treasure(Treasure *treasure) {
    srand(time(NULL));
-    treasure->position_x = rand() % 10;
-    treasure->position_y = rand() % 10;
+    treasure->pos.x = rand() % 10;
+    treasure->pos.y = rand() % 10;
 }
 
-Coordinate get_pos_treasure(Treasure *treasure) {
-    Coordinate pos;
-    pos.x = treasure->position_x;
-    pos.y = treasure->position_y;
+coordinate get_pos_treasure(Treasure *treasure) {
+    coordinate pos;
+    pos.x = treasure->pos.x;
+    pos.y = treasure->pos.y;
     return pos;
 }
 

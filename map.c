@@ -7,41 +7,67 @@
 #include "player.h"
 #include "map.h"
 #include "treasure.h"
+#include "trap.h"
 
 
 char **game_map; // Tableau de caractères pour stocker la carte du jeu
 #define COLONNE 10
 #define LIGNE 10
-//Player player ;
 char car ;
 int fin = 0;
-//Treasure treasure;
+Trap trap;
 
 
 
-void initialisation_Map() {
-    initialisation_treasure(&treasure); // Initialisation du trésor
-    // Initialisation du joueur
-     //Allouer memoire pour le tableau
-     printf("1la position du tresor est : %d, %d\n", treasure.position_x, treasure.position_y);
+
+void initialisation_Map(Player *player) {
+    initialisation_treasure(&treasure); 
     
+    initialisation_trap(&trap);
+    
+    printf("1la position du tresor est : %d, %d\n", treasure.pos.x, treasure.pos.y);
+    printf("1la position du trap est : %d, %d\n", trap.pos.x, trap.pos.y);
     game_map = (char **)malloc(LIGNE * sizeof(char *));
-    for (int i = 0; i < LIGNE; i++) {
-        game_map[i] = (char *)malloc(COLONNE * sizeof(char));
+    if (game_map == NULL) {
+        printf("Erreur d'allocation de mémoire pour game_map.\n");
+        return;
+    }
+    // Assurez-vous que player, treasure et trap sont initialisés
+    if (player == NULL || &treasure == NULL || &trap == NULL) {
+        printf("Erreur : player, treasure ou trap non initialisé.\n");
+        return;
     }
 
+// Assurez-vous que pos.x et pos.y sont dans les limites de game_map
+    if (player->pos.x < 0 || player->pos.x >= LIGNE || player->pos.y < 0 || player->pos.y >= COLONNE ||
+        treasure.pos.x < 0 || treasure.pos.x >= LIGNE || treasure.pos.y < 0 || treasure.pos.y >= COLONNE ||
+        trap.pos.x < 0 || trap.pos.x >= LIGNE || trap.pos.y < 0 || trap.pos.y >= COLONNE) {
+        printf("Erreur : pos.x ou pos.y hors des limites de game_map.\n");
+        return;
+    }
+
+    for (int i = 0; i < LIGNE; i++) {
+        game_map[i] = (char *)malloc(COLONNE * sizeof(char));
+        if (game_map[i] == NULL) {
+            printf("Erreur d'allocation de mémoire pour game_map[%d].\n", i);
+            return;
+        }
+    }
      for(int i=0; i< LIGNE; i++)
     {
-        //printf("2la position du tresor est : %d, %d\n", treasure.position_x, treasure.position_y);
+        //printf("2la position du tresor est : %d, %d\n", treasure.pos.x, treasure.pos.y););
     
         for(int j=0; j<COLONNE; j++)
         {
-            //printf("3la position du tresor est : %d, %d\n", treasure.position_x, treasure.position_y);
+            //printf("3la position du tresor est : %d, %d\n", treasure.pos.x, treasure.pos.y););
     
-            if (i == player.position_x && j == player.position_y) {
+            if (i == player->pos.x && j == player->pos.y) {
                 game_map[i][j] = 'P'; // P pour le joueur
-            } else if (i == treasure.position_x && j == treasure.position_y) {
+            } else if (i == treasure.pos.x && j == treasure.pos.y) {
                 game_map[i][j] = 'T'; // . pour le trésor
+
+            } else if (i == trap.pos.x && j == trap.pos.y) {
+                game_map[i][j] = 'X'; // X pour le piège
             } else {
                 game_map[i][j] = ' '; // # pour une case vide
             }
@@ -50,15 +76,64 @@ void initialisation_Map() {
 
 }
 
-void print() {
-    // Affichez la carte et le joueur, mais ne déplacez pas le joueur
-    for (int i = 0; i < LIGNE; i++) {
-        for (int j = 0; j < COLONNE; j++) {
-            printf("%c", game_map[i][j]);
+void print (Player *player){
+    grille_print(game_map, COLONNE, LIGNE);
+    
+    while(!fin)
+    {
+        car = getch(); 
+        game_map[player->pos.x][player->pos.y] = ' ';
+        int new_x = player->pos.x;
+        int new_y = player->pos.y;
+        switch(car)
+        {
+            case 'a':
+                fin = 1;
+                break;
+            case 'z':
+                new_x--; 
+                break;
+            case 's':
+                new_x++; 
+                break;
+            case 'q':
+                new_y--; 
+                break;
+            case 'd':
+                new_y++; 
+                break;
         }
-        printf("\n");
+        // Vérifie si les nouvelles coordonnées sont à l'intérieur de la grille
+        if (new_x >= 0 && new_x < LIGNE && new_y >= 0 && new_y < COLONNE) {
+            // Met à jour les coordonnées du joueur
+            player->pos.x = new_x;
+            player->pos.y = new_y;
+        }
+        if (player->pos.x == treasure.pos.x && player->pos.y == treasure.pos.y) {
+            printf("Félicitations, vous avez trouvé le trésor !\n");
+            printf("vos point de vie sont : %d\n", player->health_point);
+            free_trap(&trap);
+            break;
+        }
+        printf("vos point de vie sont : %d\n", player->health_point);
+        if (player->health_point <= 0) {
+            printf("Vous avez perdu !\n");
+            free_trap(&trap);
+            break;
+        }
+        if (player->pos.x == trap.pos.x && player->pos.y == trap.pos.y) {
+            printf("Vous avez marché sur un piège !\n");
+            player->health_point -= 10;
+        }
+     
+        game_map[player->pos.x][player->pos.y] = 'j';
+        game_map[treasure.pos.x][treasure.pos.y] = 'T';
+        system("clear");
+        grille_print(game_map, COLONNE, LIGNE);
+
     }
 }
+
 
 char get_case(int x, int y){
     return game_map[x][y];

@@ -4,28 +4,22 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "map.h"
+#include "utility.h"
 
 
 typedef struct {
-    int x;
-    int y;
-} Coordinate;
-
-
-typedef struct {
-    int position_x;
-    int position_y;
+    coordinate pos;
     int health_point;
 } Player;
 
-extern Player player;
+
 
 void initialisation_Player(Player *player);
 
 
-Coordinate get_pos(Player *player);
-
-
-bool movement(char direction);
-
+coordinate get_pos_player(Player *player);
+void free_player(Player *player);
+void Player_set_pos(Player *player, coordinate pos);
+int Player_get_health(Player *player);
+void Player_set_health(Player *player, int health);
 #endif 

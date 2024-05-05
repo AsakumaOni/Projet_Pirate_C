@@ -1,5 +1,5 @@
-#ifndef TREASURE_H
-#define TREASURE_H
+#ifndef TRAP_H
+#define TRAP_H
 #include <stdbool.h> // bool
 #include <stdlib.h> // malloc
 #include "grille.h"
@@ -12,12 +12,13 @@
 
 typedef struct {
     coordinate pos;
-} Treasure;
+} Trap;
 
-extern Treasure treasure;
 
-void initialisation_treasure();
 
-coordinate get_pos_treasure(Treasure *treasure);
+void initialisation_trap();
 
+coordinate get_pos_trap(Trap *trap);
+
+void free_trap(Trap *trap);
 #endif
