@@ -20,7 +20,7 @@ void move_pirate(Pirate *pirate, Player *player, char **game_map) {
 
     // Si le pirate voit le joueur (même ligne ou colonne)
     if (pirate->pos.x == player->pos.x || pirate->pos.y == player->pos.y) {
-        // Déplacez le pirate vers le joueur
+        // Déplace le pirate vers le joueur
         if (pirate->pos.x < player->pos.x) {
             pirate->pos.x++;
         } else if (pirate->pos.x > player->pos.x) {
@@ -31,7 +31,7 @@ void move_pirate(Pirate *pirate, Player *player, char **game_map) {
             pirate->pos.y--;
         }
     } else {
-        // Déplacez le pirate aléatoirement
+        // Déplace le pirate aléatoirement
         pirate->pos.x = rand() % 10;
         pirate->pos.y = rand() % 10;
     }

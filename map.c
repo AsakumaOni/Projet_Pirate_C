@@ -34,13 +34,13 @@ void initialisation_Map(Player *player) {
         printf("Erreur d'allocation de mémoire pour game_map.\n");
         return;
     }
-    // Assurez-vous que player, treasure et trap sont initialisés
+    // Assure que player, treasure et trap sont initialisés
     if (player == NULL || &treasure == NULL || &trap == NULL) {
         printf("Erreur : player, treasure ou trap non initialisé.\n");
         return;
     }
 
-// Assurez-vous que pos.x et pos.y sont dans les limites de game_map
+// Assure que pos.x et pos.y sont dans les limites de game_map
     if (player->pos.x < 0 || player->pos.x >= LIGNE || player->pos.y < 0 || player->pos.y >= COLONNE ||
         treasure.pos.x < 0 || treasure.pos.x >= LIGNE || treasure.pos.y < 0 || treasure.pos.y >= COLONNE ||
         trap.pos.x < 0 || trap.pos.x >= LIGNE || trap.pos.y < 0 || trap.pos.y >= COLONNE) {
@@ -57,11 +57,11 @@ void initialisation_Map(Player *player) {
     }
      for(int i=0; i< LIGNE; i++)
     {
-        //printf("2la position du tresor est : %d, %d\n", treasure.pos.x, treasure.pos.y););
+        
     
         for(int j=0; j<COLONNE; j++)
         {
-            //printf("3la position du tresor est : %d, %d\n", treasure.pos.x, treasure.pos.y););
+            
     
             if (i == player->pos.x && j == player->pos.y) {
                 game_map[i][j] = 'J'; // P pour le joueur
