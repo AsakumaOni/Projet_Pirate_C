@@ -61,6 +61,7 @@
     "player.h": "c",
     "stdbool.h": "c",
     "stdio.h": "c",
-    "map.h": "c"
+    "map.h": "c",
+    "stdint.h": "c"
   }
 }

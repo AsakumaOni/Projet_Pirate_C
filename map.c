@@ -8,6 +8,7 @@
 #include "map.h"
 #include "treasure.h"
 #include "trap.h"
+#include "pirate.h"
 
 
 char **game_map; // Tableau de caractères pour stocker la carte du jeu
@@ -16,13 +17,14 @@ char **game_map; // Tableau de caractères pour stocker la carte du jeu
 char car ;
 int fin = 0;
 Trap trap;
+Pirate pirate;
 
 
 
 
 void initialisation_Map(Player *player) {
     initialisation_treasure(&treasure); 
-    
+    initialisation_Pirate(&pirate);
     initialisation_trap(&trap);
     
     printf("1la position du tresor est : %d, %d\n", treasure.pos.x, treasure.pos.y);
@@ -62,13 +64,18 @@ void initialisation_Map(Player *player) {
             //printf("3la position du tresor est : %d, %d\n", treasure.pos.x, treasure.pos.y););
     
             if (i == player->pos.x && j == player->pos.y) {
-                game_map[i][j] = 'P'; // P pour le joueur
+                game_map[i][j] = 'J'; // P pour le joueur
             } else if (i == treasure.pos.x && j == treasure.pos.y) {
                 game_map[i][j] = 'T'; // . pour le trésor
 
             } else if (i == trap.pos.x && j == trap.pos.y) {
                 game_map[i][j] = 'X'; // X pour le piège
-            } else {
+                
+            
+            } else if (i == pirate.pos.x && j == pirate.pos.y) {
+                game_map[i][j] = 'P'; // P pour le pirate
+                
+            }else {
                 game_map[i][j] = ' '; // # pour une case vide
             }
         }
@@ -112,26 +119,35 @@ void print (Player *player){
         if (player->pos.x == treasure.pos.x && player->pos.y == treasure.pos.y) {
             printf("Félicitations, vous avez trouvé le trésor !\n");
             printf("vos point de vie sont : %d\n", player->health_point);
-            free_trap(&trap);
+            
             break;
         }
         printf("vos point de vie sont : %d\n", player->health_point);
         if (player->health_point <= 0) {
             printf("Vous avez perdu !\n");
-            free_trap(&trap);
+            
             break;
         }
         if (player->pos.x == trap.pos.x && player->pos.y == trap.pos.y) {
             printf("Vous avez marché sur un piège !\n");
             player->health_point -= 10;
         }
+
+        game_map[pirate.pos.x][pirate.pos.y] = ' ';
+        move_pirate(&pirate, &player, game_map);
+
+
      
         game_map[player->pos.x][player->pos.y] = 'j';
         game_map[treasure.pos.x][treasure.pos.y] = 'T';
+        game_map[trap.pos.x][trap.pos.y] = 'X';
+        game_map[pirate.pos.x][pirate.pos.y] = 'P';
         system("clear");
         grille_print(game_map, COLONNE, LIGNE);
 
     }
+    printf("Fin du jeu\n");
+    
 }
 
 

@@ -23,6 +23,7 @@ int main(){
     print(player);
     
     map_liberation();
+    
     free_player(player);
     return 0;
     
